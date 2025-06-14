@@ -2,6 +2,10 @@
 
 Free Bet ブラックジャックのルールを学び、基本戦略を練習し、カードカウンティングのスキルを向上させるためのウェブアプリケーションです。
 
+## デプロイ済みアプリケーション
+
+[https://free-bet-blackjack-trainer.netlify.app/](https://free-bet-blackjack-trainer.netlify.app/)
+
 ## 機能
 
 - Free Bet ブラックジャックのゲームプレイ
