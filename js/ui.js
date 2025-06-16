@@ -966,16 +966,17 @@ class GameUI {
         back.className = 'card-face card-back';
         inner.appendChild(back);
 
-        if (card.isFaceUp && !card.isNew) {
+        if (!card.isFaceUp && !card.isNew) {
             container.classList.add('flipped');
         }
 
         if (card.isNew) {
+            container.classList.add('flipped');
             setTimeout(() => {
                 if (card.isFaceUp) {
-                    container.classList.add('flipped');
-                } else {
                     container.classList.remove('flipped');
+                } else {
+                    container.classList.add('flipped');
                 }
                 card.isNew = false;
             }, 50);
