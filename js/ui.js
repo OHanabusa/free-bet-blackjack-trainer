@@ -689,16 +689,24 @@ class GameUI {
         // ディーラーが引く必要があるカードの枚数
         let cardsToDrawCount = 0;
         
+        // デッキのカードをコピーしてシミュレーション用に使用
+        const deckCopy = this.game.deck.cards.slice();
+        let deckIndex = deckCopy.length - 1;
+
         // ディーラーは17以上になるまでヒット
         while (simulatedHand.getTotal() < 17) {
-            // 次のカードのインデックスを取得
-            const nextCardIndex = this.game.deck.nextCardIndex();
-            const nextCard = this.game.deck.cards[nextCardIndex];
-            
+            if (deckIndex < 0) {
+                const tempDeck = new Deck(this.game.deck.numDecks);
+                deckCopy.push(...tempDeck.cards);
+                deckIndex = deckCopy.length - 1;
+            }
+
+            const nextCard = deckCopy[deckIndex--];
+
             // シミュレーション用の手札にカードを追加
             const cardCopy = { ...nextCard, isFaceUp: true };
             simulatedHand.addCard(cardCopy);
-            
+
             // 引くカードの枚数を増やす
             cardsToDrawCount++;
         }

@@ -230,7 +230,7 @@ class Game {
         
         // ディーラーが引くカードの情報を配列に格納
         const cardInfos = [];
-        
+
         if (!allHandsBusted) {
             // ディーラーの現在の手札をコピーしてシミュレーション
             const simulatedHand = new Hand();
@@ -238,20 +238,29 @@ class Game {
                 const cardCopy = { ...card };
                 simulatedHand.addCard(cardCopy);
             });
-            
+
+            // デッキのカードをコピーしてシミュレーション用に使用
+            const deckCopy = this.deck.cards.slice();
+            let deckIndex = deckCopy.length - 1;
+
             // ディーラーは17以上になるまでヒット（ソフト17でもヒット）
             while (simulatedHand.getTotal() < 17) {
-                // 次のカードの情報を取得（実際には引かない）
-                const nextCardIndex = this.deck.nextCardIndex();
-                const nextCard = this.deck.cards[nextCardIndex];
-                
+                if (deckIndex < 0) {
+                    // デッキのカードがなくなった場合はリセット
+                    const tempDeck = new Deck(this.deck.numDecks);
+                    deckCopy.push(...tempDeck.cards);
+                    deckIndex = deckCopy.length - 1;
+                }
+
+                const nextCard = deckCopy[deckIndex--];
+
                 // カード情報を追加
                 cardInfos.push({
                     suit: nextCard.suit,
                     value: nextCard.value,
                     numericValue: nextCard.numericValue
                 });
-                
+
                 // シミュレーション用の手札にカードを追加
                 const cardCopy = { ...nextCard, isFaceUp: true };
                 simulatedHand.addCard(cardCopy);
