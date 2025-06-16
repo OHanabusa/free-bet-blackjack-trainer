@@ -48,7 +48,8 @@ class Game {
      */
     initGame(bet) {
         this.bet = bet;
-        if (this.deck.getRemainingCards() < 50) {
+        // 残りデッキ数が3未満になったらシャッフル
+        if (this.deck.getRemainingCards() < 52 * 3) {
             this.deck.reset();
         }
         this.playerHands = [new Hand(bet, false)];
