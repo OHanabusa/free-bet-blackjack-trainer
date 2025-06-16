@@ -922,33 +922,30 @@ class GameUI {
      * @returns {HTMLElement} カード要素
      */
     createCardElement(card) {
-        const cardElement = document.createElement('div');
-        cardElement.className = 'card';
-        
-        if (!card.isFaceUp) {
-            // 裏向きのカード
-            cardElement.classList.add('card-back');
-            cardElement.style.backgroundColor = '#2c3e50';
-            return cardElement;
-        }
-        
-        // 表向きのカード
+        const container = document.createElement('div');
+        container.className = 'card';
+
+        const inner = document.createElement('div');
+        inner.className = 'card-inner';
+        container.appendChild(inner);
+
+        // カード表面
+        const front = document.createElement('div');
+        front.className = 'card-face card-front';
         const isRed = card.suit === 'hearts' || card.suit === 'diamonds';
-        cardElement.classList.add(isRed ? 'red' : 'black');
-        
-        // カードの値と絵柄
+        container.classList.add(isRed ? 'red' : 'black');
+
         const valueTop = document.createElement('div');
         valueTop.className = 'card-value card-value-top';
         valueTop.textContent = card.value;
-        
+
         const valueBottom = document.createElement('div');
         valueBottom.className = 'card-value card-value-bottom';
         valueBottom.textContent = card.value;
-        
+
         const suitCenter = document.createElement('div');
         suitCenter.className = 'card-suit card-suit-center';
-        
-        // 絵柄の設定
+
         if (card.suit === 'hearts') {
             suitCenter.innerHTML = '♥';
         } else if (card.suit === 'diamonds') {
@@ -958,12 +955,33 @@ class GameUI {
         } else if (card.suit === 'spades') {
             suitCenter.innerHTML = '♠';
         }
-        
-        cardElement.appendChild(valueTop);
-        cardElement.appendChild(suitCenter);
-        cardElement.appendChild(valueBottom);
-        
-        return cardElement;
+
+        front.appendChild(valueTop);
+        front.appendChild(suitCenter);
+        front.appendChild(valueBottom);
+        inner.appendChild(front);
+
+        // カード裏面
+        const back = document.createElement('div');
+        back.className = 'card-face card-back';
+        inner.appendChild(back);
+
+        if (card.isFaceUp && !card.isNew) {
+            container.classList.add('flipped');
+        }
+
+        if (card.isNew) {
+            setTimeout(() => {
+                if (card.isFaceUp) {
+                    container.classList.add('flipped');
+                } else {
+                    container.classList.remove('flipped');
+                }
+                card.isNew = false;
+            }, 50);
+        }
+
+        return container;
     }
 
     /**

@@ -223,6 +223,7 @@ class Game {
         this.dealerHand.cards.forEach(card => {
             if (!card.isFaceUp) {
                 card.isFaceUp = true;
+                card.isNew = true; // フリップアニメーション用
             }
         });
         
