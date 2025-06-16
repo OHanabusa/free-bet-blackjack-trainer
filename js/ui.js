@@ -7,6 +7,7 @@ class GameUI {
         this.cardCounting = cardCounting;
         this.gameStats = gameStats;
         this.trainingMode = false; // トレーニングモードのフラグ
+        this.showTotals = true; // 点数表示フラグ
         this.isSplitting = false; // スプリット処理中かどうかのフラグ
         this.initUI();
     }
@@ -45,6 +46,7 @@ class GameUI {
         this.strategyBtn = document.getElementById('strategyBtn');
         this.countingBtn = document.getElementById('countingBtn');
         this.statsBtn = document.getElementById('statsBtn');
+        this.toggleTotalsBtn = document.getElementById('toggleTotalsBtn');
         
         // モーダル要素の取得
         this.rulesModal = document.getElementById('rulesModal');
@@ -80,6 +82,11 @@ class GameUI {
         this.strategyBtn.addEventListener('click', () => this.openModal(this.strategyModal));
         this.countingBtn.addEventListener('click', () => this.openModal(this.countingModal));
         this.statsBtn.addEventListener('click', () => this.openModal(this.statsModal));
+        this.toggleTotalsBtn.addEventListener('click', () => {
+            this.showTotals = !this.showTotals;
+            this.toggleTotalsBtn.textContent = this.showTotals ? '点数非表示' : '点数表示';
+            this.updateUI();
+        });
         
         // 解説ポップアップのボタンのイベントリスナー
         this.explanationContinueBtn.addEventListener('click', () => {
@@ -661,8 +668,9 @@ class GameUI {
                 // カード表示を更新
                 this.updateCardDisplay();
                 
-                // ディーラーの現在の合計を表示
-                this.dealerCountElement.textContent = this.game.dealerHand.getTotal();
+                if (this.showTotals) {
+                    this.dealerCountElement.textContent = this.game.dealerHand.getTotal();
+                }
                 
                 // 最後のカードの場合は結果評価へ
                 if (index === dealerDrawTimings.length - 1) {
@@ -772,13 +780,16 @@ class GameUI {
         // ディーラーのカード表示
         this.dealerCardsElement.innerHTML = '';
         
-        // ソフトハンドの場合は両方の合計値を表示
-        if (this.game.dealerHand.isSoft() && this.game.dealerHand.getTotal() <= 21) {
-            // エースを1として扱った場合の合計値を計算
-            const hardTotal = this.game.dealerHand.getTotal() - 10;
-            this.dealerCountElement.textContent = `(${hardTotal}/${this.game.dealerHand.getTotal()})`;
+        if (this.showTotals) {
+            // ソフトハンドの場合は両方の合計値を表示
+            if (this.game.dealerHand.isSoft() && this.game.dealerHand.getTotal() <= 21) {
+                const hardTotal = this.game.dealerHand.getTotal() - 10;
+                this.dealerCountElement.textContent = `(${hardTotal}/${this.game.dealerHand.getTotal()})`;
+            } else {
+                this.dealerCountElement.textContent = `(${this.game.dealerHand.getTotal()})`;
+            }
         } else {
-            this.dealerCountElement.textContent = `(${this.game.dealerHand.getTotal()})`;
+            this.dealerCountElement.textContent = '';
         }
         
         for (const card of this.game.dealerHand.cards) {
@@ -807,14 +818,16 @@ class GameUI {
                 }
                 
                 const handTitle = document.createElement('h3');
-                
-                // ソフトハンドの場合は両方の合計値を表示
-                if (hand.isSoft() && hand.getTotal() <= 21) {
-                    // エースを1として扱った場合の合計値を計算
-                    const hardTotal = hand.getTotal() - 10;
-                    handTitle.textContent = `ハンド ${i + 1} (${hardTotal}/${hand.getTotal()})`;
+
+                if (this.showTotals) {
+                    if (hand.isSoft() && hand.getTotal() <= 21) {
+                        const hardTotal = hand.getTotal() - 10;
+                        handTitle.textContent = `ハンド ${i + 1} (${hardTotal}/${hand.getTotal()})`;
+                    } else {
+                        handTitle.textContent = `ハンド ${i + 1} (${hand.getTotal()})`;
+                    }
                 } else {
-                    handTitle.textContent = `ハンド ${i + 1} (${hand.getTotal()})`;
+                    handTitle.textContent = `ハンド ${i + 1}`;
                 }
                 
                 if (hand.isBlackjack) handTitle.textContent += ' - ブラックジャック！';
@@ -871,13 +884,15 @@ class GameUI {
             if (this.game.playerHands.length > 0) {
                 const hand = this.game.playerHands[0];
                 
-                // ソフトハンドの場合は両方の合計値を表示
-                if (hand.isSoft() && hand.getTotal() <= 21) {
-                    // エースを1として扱った場合の合計値を計算
-                    const hardTotal = hand.getTotal() - 10;
-                    this.playerCountElement.textContent = `(${hardTotal}/${hand.getTotal()})`;
+                if (this.showTotals) {
+                    if (hand.isSoft() && hand.getTotal() <= 21) {
+                        const hardTotal = hand.getTotal() - 10;
+                        this.playerCountElement.textContent = `(${hardTotal}/${hand.getTotal()})`;
+                    } else {
+                        this.playerCountElement.textContent = `(${hand.getTotal()})`;
+                    }
                 } else {
-                    this.playerCountElement.textContent = `(${hand.getTotal()})`;
+                    this.playerCountElement.textContent = '';
                 }
                 
                 if (hand.isBlackjack) this.playerCountElement.textContent += ' -BJ!';

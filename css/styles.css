@@ -52,6 +52,11 @@ header h1 {
     background-color: #2980b9;
 }
 
+/* 点数表示切替用 */
+.hidden {
+    display: none;
+}
+
 /* ゲームエリア */
 .game-container {
     background-color: #27ae60;
