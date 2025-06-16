@@ -74,10 +74,10 @@ class Game {
         
         this.gameState = 'playerTurn';
         
-        // プレイヤーがブラックジャックの場合
+        // プレイヤーがブラックジャックの場合はディーラーターンの準備だけ行う
         if (this.playerHands[0].isBlackjack) {
             this.stats.blackjacks++;
-            this.dealerTurn();
+            this.prepareDealerTurn();
         }
     }
 
@@ -186,9 +186,9 @@ class Game {
     nextHand() {
         this.currentHandIndex++;
         
-        // すべてのハンドをプレイし終えた場合
+        // すべてのハンドをプレイし終えた場合はディーラーターンの準備だけ行う
         if (this.currentHandIndex >= this.playerHands.length) {
-            this.dealerTurn();
+            this.prepareDealerTurn();
         }
     }
     
@@ -198,9 +198,6 @@ class Game {
      */
     dealerTurn() {
         // ディーラーのターンの準備
-        this.prepareDealerTurn();
-        
-        // ディーラーが引く予定のカード情報を取得
         const cardInfos = this.prepareDealerTurn();
         
         // 全てのカードを引く
