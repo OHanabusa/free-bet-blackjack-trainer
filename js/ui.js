@@ -402,7 +402,8 @@ class GameUI {
         
         // カードカウンティングの処理
         // シャッフル時はカウンティングをリセット
-        if (this.game.deck.getRemainingCards() < 50) {
+        // 残りデッキ数が3未満になったらカウンティングをリセット
+        if (this.game.deck.getRemainingCards() < 52 * 3) {
             this.cardCounting.reset();
             // カウンティング表示もリセット
             this.runningCountElement.textContent = 0;
